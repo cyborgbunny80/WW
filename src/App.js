@@ -11,9 +11,10 @@ import BulkCreateModal from './components/modals/BulkCreateModal';
 import LocationPickerModal from './components/modals/LocationPickerModal';
 import LoginModal from './components/modals/LoginModal';
 import { defaultEvents } from './constants/defaultEvents';
-import { signUp, logIn, logOut, onAuthChange } from './services/authService';
+import { signUp, logIn, logOut, onAuthChange, resetPassword } from './services/authService';
+import { getFirebaseErrorMessage } from './utils/validation';
 import { getUserFavorites, saveFavorite, removeFavorite } from './services/firebaseServices';
-import { loadFromLocalStorage, saveToLocalStorage, arrayToSet, setToArray } from './utils/localStorage';
+import { loadFromLocalStorage, saveToLocalStorage } from './utils/localStorage';
 
 function App() {
   // UI state
@@ -93,11 +94,6 @@ function App() {
 
   // Handle signup
   const handleSignUp = async () => {
-    if (!loginForm.name || !loginForm.email || !loginForm.password) {
-      alert('Please fill in all required fields');
-      return;
-    }
-
     try {
       await signUp(
         loginForm.email,
@@ -106,30 +102,38 @@ function App() {
         loginForm.city || currentLocation.city,
         loginForm.state || currentLocation.state
       );
-      
+
+      // Show success message
+      alert('Account created successfully! Please check your email to verify your account.');
+
       // Clear form
-      setLoginForm({ name: '', email: '', city: '', state: '', password: '' });
+      setLoginForm({ name: '', email: '', city: '', state: '', password: '', confirmPassword: '' });
       setIsSignUp(false);
       setShowLoginModal(false);
     } catch (error) {
-      alert('Sign up failed: ' + error.message);
+      const errorMessage = getFirebaseErrorMessage(error.code);
+      alert(errorMessage);
+      throw error; // Re-throw to stop loading state in modal
     }
   };
 
   // Handle login
-  const handleLogin = async () => {
-    if (!loginForm.email || !loginForm.password) {
-      alert('Please enter email and password');
-      return;
-    }
-
+  const handleLogin = async (rememberMe = false) => {
     try {
-      await logIn(loginForm.email, loginForm.password);
-      setLoginForm({ name: '', email: '', city: '', state: '', password: '' });
+      const userData = await logIn(loginForm.email, loginForm.password, rememberMe);
+
+      // Show warning if email not verified
+      if (!userData.emailVerified) {
+        alert('Welcome! Please verify your email address to access all features.');
+      }
+
+      setLoginForm({ name: '', email: '', city: '', state: '', password: '', confirmPassword: '' });
       setShowLoginModal(false);
       setIsSignUp(false);
     } catch (error) {
-      alert('Login failed: ' + error.message);
+      const errorMessage = getFirebaseErrorMessage(error.code);
+      alert(errorMessage);
+      throw error; // Re-throw to stop loading state in modal
     }
   };
 
@@ -137,10 +141,22 @@ function App() {
   const handleLogout = async () => {
     try {
       await logOut();
-      setLoginForm({ name: '', email: '', city: '', state: '', password: '' });
+      setLoginForm({ name: '', email: '', city: '', state: '', password: '', confirmPassword: '' });
       alert('You have been logged out successfully.');
     } catch (error) {
-      alert('Logout failed: ' + error.message);
+      const errorMessage = getFirebaseErrorMessage(error.code);
+      alert(errorMessage);
+    }
+  };
+
+  // Handle password reset
+  const handlePasswordReset = async (email) => {
+    try {
+      await resetPassword(email);
+    } catch (error) {
+      const errorMessage = getFirebaseErrorMessage(error.code);
+      alert(errorMessage);
+      throw error; // Re-throw to stop loading state in modal
     }
   };
 
@@ -205,7 +221,8 @@ function App() {
     handleSignUp,
     isSignUp,
     setIsSignUp,
-    authLoading
+    authLoading,
+    handlePasswordReset
   };
 
   if (authLoading) {
