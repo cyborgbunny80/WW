@@ -11,7 +11,8 @@ const ProfileScreen = ({
   profileTab,
   setProfileTab,
   favoriteEvents,
-  setFavoriteEvents
+  toggleFavoriteEvent,
+  handleLogout
 }) => {
   const locationFilteredEvents = filterEventsByLocation(
     events,
@@ -25,19 +26,10 @@ const ProfileScreen = ({
 
   const eventsToShow = profileTab === 'upcoming' ? upcomingEvents : pastEvents;
 
-  const toggleFavoriteEvent = (eventId) => {
-    const newFavoriteEvents = new Set(favoriteEvents);
-    if (newFavoriteEvents.has(eventId)) {
-      newFavoriteEvents.delete(eventId);
-    } else {
-      newFavoriteEvents.add(eventId);
+  const toggleFavorite = (eventId) => {
+    if (typeof toggleFavoriteEvent === 'function') {
+      toggleFavoriteEvent(eventId);
     }
-    setFavoriteEvents(newFavoriteEvents);
-  };
-
-  const handleLogout = () => {
-    // TODO: Add logout logic here
-    alert('Logged out successfully');
   };
 
   return (
@@ -143,7 +135,7 @@ const ProfileScreen = ({
                     event={event}
                     showPastLabel={profileTab === 'past'}
                     favoriteEvents={favoriteEvents}
-                    toggleFavoriteEvent={toggleFavoriteEvent}
+                    toggleFavoriteEvent={toggleFavorite}
                   />
                 ))
               )}
