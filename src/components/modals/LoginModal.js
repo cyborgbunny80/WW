@@ -18,7 +18,7 @@ const LoginModal = ({
       <div className="login-container" onClick={(e) => e.stopPropagation()}>
         <div className="login-header">
           <h2 className="login-title">
-            {isSignUp ? 'Create Account' : 'Login to When? Win!'}
+            {isSignUp ? 'Create Account' : 'Login'}
           </h2>
           <button onClick={() => setShowLoginModal(false)} className="close-button">
             ✕
@@ -77,28 +77,55 @@ const LoginModal = ({
         <button
           className="login-button"
           onClick={isSignUp ? handleSignUp : handleLogin}
+          style={{ marginBottom: '12px' }}
         >
           <span className="login-button-text">
             {isSignUp ? 'Create Account' : 'Login'}
           </span>
         </button>
 
-        <div style={{ marginTop: '16px', textAlign: 'center' }}>
-          <button
-            onClick={() => setIsSignUp(!isSignUp)}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: '#32a86b',
-              cursor: 'pointer',
-              textDecoration: 'underline',
-              fontSize: '14px'
-            }}
-          >
-            {isSignUp
-              ? 'Already have an account? Login'
-              : "Don't have an account? Sign up"}
-          </button>
+        <div style={{
+          padding: '12px',
+          backgroundColor: '#f5f5f5',
+          borderRadius: '6px',
+          textAlign: 'center',
+          fontSize: '14px'
+        }}>
+          {isSignUp ? (
+            <>
+              Already have an account?{' '}
+              <button
+                onClick={() => setIsSignUp(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#32a86b',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  textDecoration: 'underline'
+                }}
+              >
+                Login here
+              </button>
+            </>
+          ) : (
+            <>
+              Don't have an account?{' '}
+              <button
+                onClick={() => setIsSignUp(true)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#32a86b',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  textDecoration: 'underline'
+                }}
+              >
+                Sign up here
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>
