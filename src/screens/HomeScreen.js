@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import EventCard from '../components/EventCard';
+import EventDetailsModal from '../components/modals/EventDetailsModal';
+import NotificationsModal from '../components/modals/NotificationsModal';
 import { categories } from '../constants/categories';
 import {
   filterEventsByLocation,
@@ -11,8 +13,12 @@ const HomeScreen = ({
   setSearchQuery,
   selectedCategory,
   setSelectedCategory,
+  sortBy,
+  setSortBy,
   favoriteEvents,
-  setFavoriteEvents,
+  toggleFavoriteEvent,
+  calendarEvents,
+  toggleCalendarEvent,
   isLoggedIn,
   setShowLoginModal,
   setShowBulkCreate,
@@ -20,36 +26,83 @@ const HomeScreen = ({
   currentLocation,
   events,
   showCategoryDropdown,
-  setShowCategoryDropdown
+  setShowCategoryDropdown,
+  showSortDropdown,
+  setShowSortDropdown
 }) => {
-  const locationFilteredEvents = filterEventsByLocation(
-    events,
-    currentLocation.city,
-    currentLocation.state
-  );
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showEventDetails, setShowEventDetails] = useState(false);
+  const [isLoading] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
 
-  const filteredEvents = filterEventsBySearchAndCategory(
-    locationFilteredEvents,
-    searchQuery,
-    selectedCategory
-  );
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Filter and sort events
+  const filteredAndSortedEvents = useMemo(() => {
+    let result = filterEventsByLocation(
+      events,
+      currentLocation.city,
+      currentLocation.state
+    );
+
+    result = filterEventsBySearchAndCategory(
+      result,
+      debouncedSearchQuery,
+      selectedCategory
+    );
+
+    // Sort events
+    result = [...result].sort((a, b) => {
+      switch (sortBy) {
+        case 'date':
+          return new Date(a.date) - new Date(b.date);
+        case 'popularity':
+          return b.attendees - a.attendees;
+        case 'price':
+          // Free events first, then by price
+          const aIsFree = a.price.toLowerCase().includes('free');
+          const bIsFree = b.price.toLowerCase().includes('free');
+          if (aIsFree && !bIsFree) return -1;
+          if (!aIsFree && bIsFree) return 1;
+          return 0;
+        default:
+          return 0;
+      }
+    });
+
+    return result;
+  }, [events, currentLocation, debouncedSearchQuery, selectedCategory, sortBy]);
 
   const selectedCategoryData = categories.find(cat => cat.id === selectedCategory);
 
-  const toggleFavoriteEvent = (eventId) => {
+  const handleToggleFavorite = (eventId) => {
     if (!isLoggedIn) {
       alert('Please log in to favorite events');
       return;
     }
-
-    const newFavoriteEvents = new Set(favoriteEvents);
-    if (newFavoriteEvents.has(eventId)) {
-      newFavoriteEvents.delete(eventId);
-    } else {
-      newFavoriteEvents.add(eventId);
-    }
-    setFavoriteEvents(newFavoriteEvents);
+    toggleFavoriteEvent(eventId);
   };
+
+  const handleEventClick = (event) => {
+    setSelectedEvent(event);
+    setShowEventDetails(true);
+  };
+
+  const sortOptions = [
+    { id: 'date', label: 'Date', icon: '📅' },
+    { id: 'popularity', label: 'Popularity', icon: '🔥' },
+    { id: 'price', label: 'Price', icon: '💰' }
+  ];
+
+  const selectedSortOption = sortOptions.find(opt => opt.id === sortBy);
 
   return (
     <div className="screen-container">
@@ -70,18 +123,16 @@ const HomeScreen = ({
           </div>
           <div className="header-buttons">
             <button
-              className="create-button"
+              className="header-button"
               onClick={() => {
                 if (!isLoggedIn) {
-                  alert('Please log in to create events');
+                  alert('Please log in to view notifications');
+                  setShowLoginModal(true);
                   return;
                 }
-                setShowBulkCreate(true);
+                setShowNotifications(true);
               }}
             >
-              <span className="create-button-text">+</span>
-            </button>
-            <button className="header-button">
               <span className="header-button-text">🔔</span>
             </button>
           </div>
@@ -97,14 +148,27 @@ const HomeScreen = ({
           />
         </div>
 
-        <button
-          className="category-selector"
-          onClick={() => setShowCategoryDropdown(true)}
-        >
-          <span className="category-emoji">{selectedCategoryData?.emoji}</span>
-          <span className="category-selector-text">{selectedCategoryData?.name}</span>
-          <span className="chevron">▼</span>
-        </button>
+        <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
+          <button
+            className="category-selector"
+            style={{ flex: 1 }}
+            onClick={() => setShowCategoryDropdown(true)}
+          >
+            <span className="category-emoji">{selectedCategoryData?.emoji}</span>
+            <span className="category-selector-text">{selectedCategoryData?.name}</span>
+            <span className="chevron">▼</span>
+          </button>
+
+          <button
+            className="category-selector"
+            style={{ minWidth: '120px' }}
+            onClick={() => setShowSortDropdown(true)}
+          >
+            <span className="category-emoji">{selectedSortOption?.icon}</span>
+            <span className="category-selector-text">{selectedSortOption?.label}</span>
+            <span className="chevron">▼</span>
+          </button>
+        </div>
       </div>
 
       <div className="events-container">
@@ -113,11 +177,26 @@ const HomeScreen = ({
             {selectedCategory === 'all' ? 'All Events' : selectedCategoryData?.name}
           </h2>
           <div className="event-count">
-            <span className="event-count-text">{filteredEvents.length} events</span>
+            <span className="event-count-text">{filteredAndSortedEvents.length} events</span>
           </div>
         </div>
 
-        {filteredEvents.length === 0 ? (
+        {isLoading ? (
+          // Loading skeleton
+          <>
+            {[1, 2, 3].map(i => (
+              <div key={i} className="skeleton-card">
+                <div className="skeleton-image skeleton" />
+                <div className="skeleton-content">
+                  <div className="skeleton-title skeleton" />
+                  <div className="skeleton-text skeleton medium" />
+                  <div className="skeleton-text skeleton short" />
+                  <div className="skeleton-text skeleton long" />
+                </div>
+              </div>
+            ))}
+          </>
+        ) : filteredAndSortedEvents.length === 0 ? (
           <div className="empty-state">
             <span className="empty-state-icon">🎪</span>
             <h3 className="empty-state-title">No events found in {currentLocation.city}</h3>
@@ -132,16 +211,42 @@ const HomeScreen = ({
             </button>
           </div>
         ) : (
-          filteredEvents.map(event => (
+          filteredAndSortedEvents.map(event => (
             <EventCard
               key={event.id}
               event={event}
               favoriteEvents={favoriteEvents}
-              toggleFavoriteEvent={toggleFavoriteEvent}
+              toggleFavoriteEvent={handleToggleFavorite}
+              calendarEvents={calendarEvents}
+              onClick={handleEventClick}
             />
           ))
         )}
       </div>
+
+      {/* Event Details Modal */}
+      <EventDetailsModal
+        event={selectedEvent}
+        isOpen={showEventDetails}
+        onClose={() => setShowEventDetails(false)}
+        toggleFavorite={toggleFavoriteEvent}
+        isFavorite={selectedEvent ? favoriteEvents.has(selectedEvent.id) : false}
+        toggleCalendar={toggleCalendarEvent}
+        isInCalendar={selectedEvent ? calendarEvents.has(String(selectedEvent.id)) : false}
+        isLoggedIn={isLoggedIn}
+        setShowLoginModal={setShowLoginModal}
+        favoriteEvents={favoriteEvents}
+        calendarEvents={calendarEvents}
+      />
+
+      {/* Notifications Modal */}
+      <NotificationsModal
+        isOpen={showNotifications}
+        onClose={() => setShowNotifications(false)}
+        events={events}
+        favoriteEvents={favoriteEvents}
+        calendarEvents={calendarEvents}
+      />
     </div>
   );
 };

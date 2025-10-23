@@ -51,7 +51,7 @@ const LocationPickerModal = ({
           </button>
         )}
 
-        <h3 className="location-picker-subtitle">Popular Cities</h3>
+        <h3 className="location-picker-subtitle">Available Cities</h3>
         <div className="city-list">
           {popularCities.map((location, index) => (
             <button

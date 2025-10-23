@@ -152,6 +152,9 @@ const LoginModal = ({
       } else {
         await handleLogin(rememberMe);
       }
+    } catch (error) {
+      // Error is already shown via alert in App.js, just catch it here
+      console.error('Auth error caught in modal:', error);
     } finally {
       setIsLoading(false);
     }
@@ -169,6 +172,9 @@ const LoginModal = ({
     try {
       await handlePasswordReset(loginForm.email);
       setResetEmailSent(true);
+    } catch (error) {
+      // Error is already handled in App.js, just catch it here to prevent uncaught promise
+      console.error('Password reset error caught in modal:', error);
     } finally {
       setIsLoading(false);
     }

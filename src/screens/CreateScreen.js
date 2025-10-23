@@ -1,6 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
+import SingleEventModal from '../components/modals/SingleEventModal';
+import { createEvent } from '../services/firebaseServices';
 
-const CreateScreen = ({ isLoggedIn, setShowLoginModal, setShowBulkCreate }) => {
+const CreateScreen = ({
+  isLoggedIn,
+  setShowLoginModal,
+  setShowBulkCreate,
+  currentLocation,
+  currentUser,
+  events,
+  setEvents
+}) => {
+  const [showSingleEvent, setShowSingleEvent] = useState(false);
+
+  const handleCreateEvent = async (newEvent) => {
+    try {
+      // Save to Firebase
+      const eventId = await createEvent(newEvent);
+
+      // Add the Firebase ID to the event
+      const eventWithFirebaseId = { ...newEvent, firebaseId: eventId };
+
+      // Update local state
+      setEvents([...events, eventWithFirebaseId]);
+
+      alert('Event created successfully!');
+    } catch (error) {
+      console.error('Error creating event:', error);
+      alert('Failed to create event. Please try again.');
+    }
+  };
+
   return (
     <div className="screen-container">
       <div className="page-header">
@@ -25,21 +55,32 @@ const CreateScreen = ({ isLoggedIn, setShowLoginModal, setShowBulkCreate }) => {
           <>
             <button
               className="create-option"
+              onClick={() => setShowSingleEvent(true)}
+            >
+              <span className="create-option-icon">➕</span>
+              <h3 className="create-option-title">Single Event</h3>
+              <p className="create-option-description">Add one event at a time</p>
+            </button>
+
+            <button
+              className="create-option"
               onClick={() => setShowBulkCreate(true)}
             >
               <span className="create-option-icon">📋</span>
               <h3 className="create-option-title">Bulk Add Events</h3>
               <p className="create-option-description">Perfect for offices & organizations</p>
             </button>
-
-            <button className="create-option">
-              <span className="create-option-icon">➕</span>
-              <h3 className="create-option-title">Single Event</h3>
-              <p className="create-option-description">Add one event at a time</p>
-            </button>
           </>
         )}
       </div>
+
+      <SingleEventModal
+        isOpen={showSingleEvent}
+        onClose={() => setShowSingleEvent(false)}
+        currentLocation={currentLocation}
+        currentUser={currentUser}
+        onCreateEvent={handleCreateEvent}
+      />
     </div>
   );
 };

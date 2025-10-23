@@ -3,61 +3,61 @@ import React from 'react';
 const BottomNavigation = ({ currentScreen, setCurrentScreen }) => (
   <div className="bottom-nav">
     <button
-      className="nav-item"
+      className={`nav-item ${currentScreen === 'home' ? 'nav-item-active' : ''}`}
       onClick={() => setCurrentScreen('home')}
     >
-      <span className={`nav-icon ${currentScreen === 'home' ? 'nav-icon-active' : ''}`}>
+      <span className="nav-icon">
         🏠
       </span>
-      <span className={`nav-label ${currentScreen === 'home' ? 'nav-label-active' : ''}`}>
+      <span className="nav-label">
         Home
       </span>
     </button>
 
     <button
-      className="nav-item"
+      className={`nav-item ${currentScreen === 'calendar' ? 'nav-item-active' : ''}`}
       onClick={() => setCurrentScreen('calendar')}
     >
-      <span className={`nav-icon ${currentScreen === 'calendar' ? 'nav-icon-active' : ''}`}>
+      <span className="nav-icon">
         📅
       </span>
-      <span className={`nav-label ${currentScreen === 'calendar' ? 'nav-label-active' : ''}`}>
+      <span className="nav-label">
         Calendar
       </span>
     </button>
 
     <button
-      className="nav-item"
+      className={`nav-item ${currentScreen === 'create' ? 'nav-item-active' : ''}`}
       onClick={() => setCurrentScreen('create')}
     >
-      <span className={`nav-icon ${currentScreen === 'create' ? 'nav-icon-active' : ''}`}>
+      <span className="nav-icon">
         ➕
       </span>
-      <span className={`nav-label ${currentScreen === 'create' ? 'nav-label-active' : ''}`}>
+      <span className="nav-label">
         Create
       </span>
     </button>
 
     <button
-      className="nav-item"
+      className={`nav-item ${currentScreen === 'favorites' ? 'nav-item-active' : ''}`}
       onClick={() => setCurrentScreen('favorites')}
     >
-      <span className={`nav-icon ${currentScreen === 'favorites' ? 'nav-icon-active' : ''}`}>
+      <span className="nav-icon">
         ❤️
       </span>
-      <span className={`nav-label ${currentScreen === 'favorites' ? 'nav-label-active' : ''}`}>
+      <span className="nav-label">
         Favorites
       </span>
     </button>
 
     <button
-      className="nav-item"
+      className={`nav-item ${currentScreen === 'profile' ? 'nav-item-active' : ''}`}
       onClick={() => setCurrentScreen('profile')}
     >
-      <span className={`nav-icon ${currentScreen === 'profile' ? 'nav-icon-active' : ''}`}>
+      <span className="nav-icon">
         👤
       </span>
-      <span className={`nav-label ${currentScreen === 'profile' ? 'nav-label-active' : ''}`}>
+      <span className="nav-label">
         Profile
       </span>
     </button>

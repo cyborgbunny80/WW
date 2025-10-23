@@ -9,10 +9,13 @@ import {
   browserLocalPersistence,
   browserSessionPersistence
 } from 'firebase/auth';
-import { auth } from '../firebase/config';
+import { auth, isFirebaseConfigured } from '../firebase/config';
 import { createUserProfile, getUserProfile } from './firebaseServices';
 
 export const signUp = async (email, password, name, city, state) => {
+  if (!isFirebaseConfigured() || !auth) {
+    throw new Error('Firebase is not configured. Please contact support to enable authentication.');
+  }
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const userId = userCredential.user.uid;
@@ -38,6 +41,9 @@ export const signUp = async (email, password, name, city, state) => {
 };
 
 export const logIn = async (email, password, rememberMe = false) => {
+  if (!isFirebaseConfigured() || !auth) {
+    throw new Error('Firebase is not configured. Please contact support to enable authentication.');
+  }
   try {
     // Set persistence based on rememberMe option
     const persistence = rememberMe ? browserLocalPersistence : browserSessionPersistence;
@@ -90,6 +96,13 @@ export const resendVerificationEmail = async () => {
 };
 
 export const onAuthChange = (callback) => {
+  if (!isFirebaseConfigured() || !auth) {
+    // If Firebase is not configured, immediately call callback with null
+    // This prevents the app from hanging in loading state
+    setTimeout(() => callback(null), 0);
+    return () => {}; // Return empty unsubscribe function
+  }
+
   return onAuthStateChanged(auth, async (user) => {
     if (user) {
       const userData = await getUserProfile(user.uid);

@@ -2,7 +2,7 @@ export const defaultEvents = [
   {
     id: 1,
     title: "First Friday Art Walk",
-    date: "2024-12-06",
+    date: "2025-11-07",
     time: "17:00",
     location: "Haynie's Corner Arts District",
     city: "Evansville",
@@ -17,7 +17,7 @@ export const defaultEvents = [
   {
     id: 2,
     title: "Jazz Night at The Centre",
-    date: "2024-12-08",
+    date: "2025-10-25",
     time: "19:30",
     location: "The Centre",
     city: "Evansville",
@@ -32,7 +32,7 @@ export const defaultEvents = [
   {
     id: 3,
     title: "Saturday Farmers Market",
-    date: "2024-12-07",
+    date: "2025-10-25",
     time: "08:00",
     location: "Main Street",
     city: "Evansville",
@@ -47,7 +47,7 @@ export const defaultEvents = [
   {
     id: 4,
     title: "Holiday Lights Festival",
-    date: "2024-12-15",
+    date: "2025-12-15",
     time: "18:00",
     location: "Garvin Park",
     city: "Evansville",
@@ -62,7 +62,7 @@ export const defaultEvents = [
   {
     id: 5,
     title: "Business Networking Breakfast",
-    date: "2024-12-12",
+    date: "2025-10-28",
     time: "07:30",
     location: "DoubleTree Hotel",
     city: "Evansville",
@@ -77,7 +77,7 @@ export const defaultEvents = [
   {
     id: 6,
     title: "Broadway Show: Hamilton",
-    date: "2024-12-10",
+    date: "2025-11-10",
     time: "20:00",
     location: "Tennessee Performing Arts Center",
     city: "Nashville",
@@ -92,7 +92,7 @@ export const defaultEvents = [
   {
     id: 7,
     title: "Music City Food Festival",
-    date: "2024-12-09",
+    date: "2025-10-26",
     time: "11:00",
     location: "Centennial Park",
     city: "Nashville",
@@ -107,7 +107,7 @@ export const defaultEvents = [
   {
     id: 8,
     title: "Honky Tonk Tuesday",
-    date: "2024-12-10",
+    date: "2025-10-28",
     time: "19:00",
     location: "The Stage on Broadway",
     city: "Nashville",
@@ -122,7 +122,7 @@ export const defaultEvents = [
   {
     id: 9,
     title: "Nashville Tech Meetup",
-    date: "2024-12-11",
+    date: "2025-10-29",
     time: "18:30",
     location: "The Wond'ry",
     city: "Nashville",
@@ -137,7 +137,7 @@ export const defaultEvents = [
   {
     id: 10,
     title: "Kentucky Derby Museum Tour",
-    date: "2024-12-14",
+    date: "2025-11-14",
     time: "10:00",
     location: "Churchill Downs",
     city: "Louisville",
@@ -152,7 +152,7 @@ export const defaultEvents = [
   {
     id: 11,
     title: "Bourbon Tasting Experience",
-    date: "2024-12-13",
+    date: "2025-10-30",
     time: "19:00",
     location: "Angel's Envy Distillery",
     city: "Louisville",
@@ -167,7 +167,7 @@ export const defaultEvents = [
   {
     id: 12,
     title: "Waterfront Park Concert",
-    date: "2024-12-08",
+    date: "2025-10-26",
     time: "17:00",
     location: "Waterfront Park",
     city: "Louisville",
@@ -182,7 +182,7 @@ export const defaultEvents = [
   {
     id: 13,
     title: "Art Institute Special Exhibition",
-    date: "2024-12-16",
+    date: "2025-11-16",
     time: "10:00",
     location: "Art Institute of Chicago",
     city: "Chicago",
@@ -197,7 +197,7 @@ export const defaultEvents = [
   {
     id: 14,
     title: "Chicago Food Truck Rally",
-    date: "2024-12-15",
+    date: "2025-10-31",
     time: "12:00",
     location: "Millennium Park",
     city: "Chicago",
@@ -212,7 +212,7 @@ export const defaultEvents = [
   {
     id: 15,
     title: "Second City Comedy Show",
-    date: "2024-12-12",
+    date: "2025-11-12",
     time: "20:00",
     location: "Second City",
     city: "Chicago",
@@ -227,7 +227,7 @@ export const defaultEvents = [
   {
     id: 16,
     title: "Indianapolis Motor Speedway Tour",
-    date: "2024-12-09",
+    date: "2025-10-27",
     time: "11:00",
     location: "Indianapolis Motor Speedway",
     city: "Indianapolis",
@@ -242,7 +242,7 @@ export const defaultEvents = [
   {
     id: 17,
     title: "Circle City Market",
-    date: "2024-12-07",
+    date: "2025-10-25",
     time: "09:00",
     location: "Monument Circle",
     city: "Indianapolis",
@@ -257,7 +257,7 @@ export const defaultEvents = [
   {
     id: 18,
     title: "Indianapolis Symphony Orchestra",
-    date: "2024-12-14",
+    date: "2025-11-14",
     time: "19:30",
     location: "Hilbert Circle Theatre",
     city: "Indianapolis",
@@ -272,7 +272,7 @@ export const defaultEvents = [
   {
     id: 19,
     title: "Gateway Arch National Park Tour",
-    date: "2024-12-11",
+    date: "2025-10-29",
     time: "10:00",
     location: "Gateway Arch",
     city: "St. Louis",
@@ -287,7 +287,7 @@ export const defaultEvents = [
   {
     id: 20,
     title: "Cardinals Baseball Fan Event",
-    date: "2024-12-13",
+    date: "2025-11-13",
     time: "18:00",
     location: "Busch Stadium",
     city: "St. Louis",
@@ -302,7 +302,7 @@ export const defaultEvents = [
   {
     id: 21,
     title: "Cincinnati Chili Cook-Off",
-    date: "2024-12-15",
+    date: "2025-10-30",
     time: "12:00",
     location: "Fountain Square",
     city: "Cincinnati",
@@ -317,7 +317,7 @@ export const defaultEvents = [
   {
     id: 22,
     title: "Cincinnati Symphony Holiday Concert",
-    date: "2024-12-16",
+    date: "2025-12-16",
     time: "19:00",
     location: "Music Hall",
     city: "Cincinnati",
@@ -332,7 +332,7 @@ export const defaultEvents = [
   {
     id: 23,
     title: "October Art Festival",
-    date: "2024-10-15",
+    date: "2025-10-24",
     time: "12:00",
     location: "Riverside Park",
     city: "Evansville",
@@ -347,7 +347,7 @@ export const defaultEvents = [
   {
     id: 24,
     title: "Halloween Block Party",
-    date: "2024-10-31",
+    date: "2025-10-31",
     time: "18:00",
     location: "Main Street",
     city: "Evansville",
@@ -362,7 +362,7 @@ export const defaultEvents = [
   {
     id: 25,
     title: "Nashville Songwriter's Circle",
-    date: "2024-11-20",
+    date: "2025-11-20",
     time: "19:00",
     location: "The Bluebird Cafe",
     city: "Nashville",
@@ -377,7 +377,7 @@ export const defaultEvents = [
   {
     id: 26,
     title: "Louisville Craft Beer Festival",
-    date: "2024-11-10",
+    date: "2025-11-10",
     time: "15:00",
     location: "Louisville Slugger Field",
     city: "Louisville",
@@ -392,7 +392,7 @@ export const defaultEvents = [
   {
     id: 27,
     title: "Chicago Architecture Boat Tour",
-    date: "2024-11-05",
+    date: "2025-11-05",
     time: "14:00",
     location: "Chicago River",
     city: "Chicago",

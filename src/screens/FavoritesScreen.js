@@ -1,23 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import EventCard from '../components/EventCard';
+import EventDetailsModal from '../components/modals/EventDetailsModal';
 
 const FavoritesScreen = ({
   isLoggedIn,
   setShowLoginModal,
   events,
   favoriteEvents,
-  setFavoriteEvents
+  toggleFavoriteEvent,
+  calendarEvents,
+  toggleCalendarEvent
 }) => {
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showEventDetails, setShowEventDetails] = useState(false);
+
   const favoriteEventsList = events.filter(event => favoriteEvents.has(event.id));
 
-  const toggleFavoriteEvent = (eventId) => {
-    const newFavoriteEvents = new Set(favoriteEvents);
-    if (newFavoriteEvents.has(eventId)) {
-      newFavoriteEvents.delete(eventId);
-    } else {
-      newFavoriteEvents.add(eventId);
-    }
-    setFavoriteEvents(newFavoriteEvents);
+  const handleEventClick = (event) => {
+    setSelectedEvent(event);
+    setShowEventDetails(true);
   };
 
   return (
@@ -51,10 +52,27 @@ const FavoritesScreen = ({
               event={event}
               favoriteEvents={favoriteEvents}
               toggleFavoriteEvent={toggleFavoriteEvent}
+              calendarEvents={calendarEvents}
+              onClick={handleEventClick}
             />
           ))
         )}
       </div>
+
+      {/* Event Details Modal */}
+      <EventDetailsModal
+        event={selectedEvent}
+        isOpen={showEventDetails}
+        onClose={() => setShowEventDetails(false)}
+        toggleFavorite={toggleFavoriteEvent}
+        isFavorite={selectedEvent ? favoriteEvents.has(selectedEvent.id) : false}
+        toggleCalendar={toggleCalendarEvent}
+        isInCalendar={selectedEvent ? calendarEvents.has(String(selectedEvent.id)) : false}
+        isLoggedIn={isLoggedIn}
+        setShowLoginModal={setShowLoginModal}
+        favoriteEvents={favoriteEvents}
+        calendarEvents={calendarEvents}
+      />
     </div>
   );
 };
