@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { formatTime, formatDate } from '../utils/dateFormatting';
+import { formatTime } from '../utils/dateFormatting';
 import { filterEventsByLocation } from '../utils/eventFiltering';
 import EventDetailsModal from '../components/modals/EventDetailsModal';
+import { categories } from '../constants/categories';
 
 const CalendarScreen = ({
   currentLocation,
@@ -12,7 +13,10 @@ const CalendarScreen = ({
   calendarEvents,
   toggleCalendarEvent,
   isLoggedIn,
-  setShowLoginModal
+  setShowLoginModal,
+  sortBy,
+  showSortDropdown,
+  setShowSortDropdown
 }) => {
   const locationFilteredEvents = filterEventsByLocation(
     events,
@@ -78,14 +82,25 @@ const CalendarScreen = ({
     setShowEventDetails(true);
   };
 
+  // Use categories for sorting
+  const selectedCategory = categories.find(cat => cat.id === sortBy) || categories[0];
+
   // Check if we're viewing the current month
   const isCurrentMonth = selectedMonth === today.getMonth() && selectedYear === today.getFullYear();
 
-  const displayedEvents = selectedDay
+  let displayedEvents = selectedDay
     ? eventDates[selectedDay] || []
     : isCurrentMonth
       ? eventDates[today.getDate()] || []
       : [];
+
+  // Filter by category
+  if (sortBy && sortBy !== 'all') {
+    displayedEvents = displayedEvents.filter(event => {
+      const categoryMatch = categories.find(cat => cat.name === event.category);
+      return categoryMatch && categoryMatch.id === sortBy;
+    });
+  }
 
   const displayTitle = selectedDay
     ? `Events on ${monthNames[selectedMonth]} ${selectedDay}, ${selectedYear}`
@@ -107,16 +122,26 @@ const CalendarScreen = ({
     <div className="screen-container">
       <div className="page-header">
         <h1 className="page-title">Calendar</h1>
-        <button
-          className="location-row"
-          onClick={() => setShowLocationPicker(true)}
-        >
-          <span className="location-icon">📍</span>
-          <span className="page-subtitle">
-            {currentLocation.city}, {currentLocation.state}
-          </span>
-          <span className="location-chevron">▼</span>
-        </button>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <button
+            className="location-row"
+            onClick={() => setShowLocationPicker(true)}
+          >
+            <span className="location-icon">📍</span>
+            <span className="location-text">
+              {currentLocation.city}, {currentLocation.state}
+            </span>
+            <span className="location-chevron">▼</span>
+          </button>
+          <button
+            className="calendar-category-selector"
+            onClick={() => setShowSortDropdown(true)}
+          >
+            <span className="category-emoji">{selectedCategory?.emoji}</span>
+            <span className="category-selector-text">{selectedCategory?.name}</span>
+            <span className="chevron">▼</span>
+          </button>
+        </div>
       </div>
 
       <div className="calendar-container">

@@ -46,16 +46,18 @@ const FavoritesScreen = ({
             <p className="empty-state-text">Heart the events you love!</p>
           </div>
         ) : (
-          favoriteEventsList.map(event => (
-            <EventCard
-              key={event.id}
-              event={event}
-              favoriteEvents={favoriteEvents}
-              toggleFavoriteEvent={toggleFavoriteEvent}
-              calendarEvents={calendarEvents}
-              onClick={handleEventClick}
-            />
-          ))
+          <div className="favorites-compact">
+            {favoriteEventsList.map(event => (
+              <EventCard
+                key={event.id}
+                event={event}
+                favoriteEvents={favoriteEvents}
+                toggleFavoriteEvent={toggleFavoriteEvent}
+                calendarEvents={calendarEvents}
+                onClick={handleEventClick}
+              />
+            ))}
+          </div>
         )}
       </div>
 

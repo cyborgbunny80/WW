@@ -138,9 +138,13 @@ const SingleEventModal = ({
       category: categories.find(cat => cat.id === formData.category)?.name || 'Community',
       price: formData.price.trim() || 'Free',
       description: formData.description.trim(),
-      image: formData.imageUrl.trim() || `https://picsum.photos/400/200?random=${Date.now()}`,
       organizer: organizerName
     };
+
+    // Only add image if provided
+    if (formData.imageUrl.trim()) {
+      eventData.image = formData.imageUrl.trim();
+    }
 
     // If editing, preserve existing event properties
     const newEvent = isEditing && existingEvent
@@ -155,9 +159,6 @@ const SingleEventModal = ({
           createdByUid: currentUser?.userId, // Store for reliability
           ...eventData
         };
-
-    console.log('Creating event with currentUser:', currentUser);
-    console.log('New event data:', newEvent);
 
     await onCreateEvent(newEvent);
 

@@ -60,7 +60,7 @@ const BulkCreateModal = ({
   };
 
   const downloadTemplate = () => {
-    const template = 'Title,Date (YYYY-MM-DD),Time (HH:MM),Location,Category,Price,Description\nSummer BBQ,2024-12-15,18:00,Central Park,Community,Free,Join us for a fun evening';
+    const template = 'Title,Date (YYYY-MM-DD),Time (HH:MM),Location,Category,Price,Description,Image URL (optional)\nSummer BBQ,2024-12-15,18:00,Central Park,Community,Free,Join us for a fun evening,';
     const blob = new Blob([template], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -119,12 +119,16 @@ const BulkCreateModal = ({
           category: parts[4] || 'Community',
           price: parts[5] || 'Free',
           description: parts[6] || 'Event details to be announced.',
-          image: `https://picsum.photos/400/200?random=${Date.now() + index}`,
           attendees: 0,
           organizer: organizerName,
           createdBy: currentUser?.userId,
           createdByUid: currentUser?.userId
         };
+
+        // Add image if provided (7th field)
+        if (parts[7] && parts[7].trim()) {
+          newEvent.image = parts[7].trim();
+        }
 
         try {
           // Save to Firebase
@@ -260,7 +264,7 @@ const BulkCreateModal = ({
                 <div className="csv-drop-prompt">
                   <span className="drop-icon">📁</span>
                   <p className="drop-text">Drop CSV file here or click to browse</p>
-                  <p className="drop-hint">Title, Date, Time, Location, Category, Price, Description</p>
+                  <p className="drop-hint">Title, Date, Time, Location, Category, Price, Description, Image (optional)</p>
                 </div>
               )}
             </div>
@@ -279,13 +283,23 @@ const BulkCreateModal = ({
           <>
             <p className="bulk-create-instructions">
               One event per line, separated by | (pipe):<br />
-              <code>Event Name | Date (YYYY-MM-DD) | Time (HH:MM) | Location | Category | Price | Description</code>
+              <code>Event Name | Date (YYYY-MM-DD) | Time (HH:MM) | Location | Category | Price | Description | Image URL (optional)</code>
             </p>
+            <div className="bulk-paste-examples">
+              <p className="bulk-paste-example-title">Examples:</p>
+              <div className="bulk-paste-example">
+                Team Meeting | 2024-12-15 | 09:00 | Conference Room A | Business | Free | Weekly team sync
+              </div>
+              <div className="bulk-paste-example">
+                Holiday Party | 2024-12-20 | 18:00 | Main Office | Social | Free | Annual celebration | https://example.com/party.jpg
+              </div>
+            </div>
             <textarea
               className="bulk-create-input"
-              placeholder="Team Meeting | 2024-11-15 | 09:00 | Conference Room A | Business | Free | Weekly team sync"
+              placeholder="Paste your events here, one per line..."
               value={bulkEventText}
               onChange={(e) => setBulkEventText(e.target.value)}
+              rows="8"
             />
           </>
         )}

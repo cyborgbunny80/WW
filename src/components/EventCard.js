@@ -8,25 +8,27 @@ const EventCard = ({ event, showPastLabel = false, favoriteEvents, toggleFavorit
 
   return (
     <div className={`event-card ${isInCalendar ? 'event-card-in-calendar' : ''}`} onClick={() => onClick && onClick(event)}>
-      <div className="image-container">
-        <img src={event.image} alt={event.title} className="event-image" />
-        {showPastLabel && (
-          <div className="past-label">
-            <span className="past-label-text">Past Event</span>
-          </div>
-        )}
-        <button
-          className="action-button"
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleFavoriteEvent(event.id);
-          }}
-        >
-          <span className="heart-icon">
-            {favoriteEvents.has(event.id) ? '❤️' : '🤍'}
-          </span>
-        </button>
-      </div>
+      {event.image && (
+        <div className="image-container">
+          <img src={event.image} alt={event.title} className="event-image" />
+          {showPastLabel && (
+            <div className="past-label">
+              <span className="past-label-text">Past Event</span>
+            </div>
+          )}
+          <button
+            className="action-button"
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleFavoriteEvent(event.id);
+            }}
+          >
+            <span className="heart-icon">
+              {favoriteEvents.has(event.id) ? '❤️' : '🤍'}
+            </span>
+          </button>
+        </div>
+      )}
 
       <div className="event-content">
         <h3 className="event-title">{event.title}</h3>

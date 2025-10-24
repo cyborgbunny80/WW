@@ -1,10 +1,5 @@
 import React from 'react';
-
-const sortOptions = [
-  { id: 'date', label: 'Date', icon: '📅' },
-  { id: 'popularity', label: 'Popularity', icon: '🔥' },
-  { id: 'price', label: 'Price', icon: '💰' }
-];
+import { categories } from '../../constants/categories';
 
 const SortDropdown = ({
   showSortDropdown,
@@ -17,26 +12,26 @@ const SortDropdown = ({
   return (
     <div className="modal-overlay" onClick={() => setShowSortDropdown(false)}>
       <div className="dropdown-container" onClick={(e) => e.stopPropagation()}>
-        {sortOptions.map(option => (
+        {categories.map(category => (
           <button
-            key={option.id}
+            key={category.id}
             className={`dropdown-item ${
-              sortBy === option.id ? 'dropdown-item-active' : ''
+              sortBy === category.id ? 'dropdown-item-active' : ''
             }`}
             onClick={() => {
-              setSortBy(option.id);
+              setSortBy(category.id);
               setShowSortDropdown(false);
             }}
           >
-            <span className="dropdown-emoji">{option.icon}</span>
+            <span className="dropdown-emoji">{category.emoji}</span>
             <span
               className={`dropdown-text ${
-                sortBy === option.id ? 'dropdown-text-active' : ''
+                sortBy === category.id ? 'dropdown-text-active' : ''
               }`}
             >
-              {option.label}
+              {category.name}
             </span>
-            {sortBy === option.id && (
+            {sortBy === category.id && (
               <span className="checkmark">✓</span>
             )}
           </button>

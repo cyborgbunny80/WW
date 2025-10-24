@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import EventCard from '../components/EventCard';
 import SingleEventModal from '../components/modals/SingleEventModal';
+import EventDetailsModal from '../components/modals/EventDetailsModal';
 import { getUpcomingAndPastEvents, filterEventsByLocation } from '../utils/eventFiltering';
 import { updateEvent, deleteEvent } from '../services/firebaseServices';
 
@@ -16,10 +17,13 @@ const ProfileScreen = ({
   favoriteEvents,
   toggleFavoriteEvent,
   calendarEvents,
+  toggleCalendarEvent,
   handleLogout
 }) => {
   const [editingEvent, setEditingEvent] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showEventDetails, setShowEventDetails] = useState(false);
 
   const locationFilteredEvents = filterEventsByLocation(
     events,
@@ -35,23 +39,17 @@ const ProfileScreen = ({
   const myEvents = events.filter(event => {
     if (!currentUser) return false;
 
-    console.log('Checking event:', event.title, 'organizer:', event.organizer, 'createdBy:', event.createdBy);
-    console.log('Current user:', currentUser.name, 'userId:', currentUser.userId);
-
     // Match by user ID (most reliable for new events)
     if (event.createdBy && event.createdBy === currentUser.userId) {
-      console.log('Match by createdBy!');
       return true;
     }
 
     if (event.createdByUid && event.createdByUid === currentUser.userId) {
-      console.log('Match by createdByUid!');
       return true;
     }
 
     // Match by exact organizer name
     if (event.organizer === currentUser.name) {
-      console.log('Match by exact name!');
       return true;
     }
 
@@ -64,7 +62,6 @@ const ProfileScreen = ({
       if (organizerLower === userNameLower ||
           organizerLower.includes(userNameLower) ||
           userNameLower.includes(organizerLower)) {
-        console.log('Match by flexible name matching!');
         return true;
       }
     }
@@ -87,6 +84,11 @@ const ProfileScreen = ({
     if (typeof toggleFavoriteEvent === 'function') {
       toggleFavoriteEvent(eventId);
     }
+  };
+
+  const handleEventClick = (event) => {
+    setSelectedEvent(event);
+    setShowEventDetails(true);
   };
 
   const handleEditEvent = (event) => {
@@ -164,7 +166,6 @@ const ProfileScreen = ({
         ) : (
           <>
             <div className="profile-card">
-              <img src={currentUser.avatar} alt={currentUser.name} className="profile-avatar" />
               <div className="profile-info">
                 <h2 className="profile-name">{currentUser.name}</h2>
                 <p className="profile-email">{currentUser.email}</p>
@@ -268,13 +269,14 @@ const ProfileScreen = ({
                 </div>
               ) : (
                 eventsToShow.map(event => (
-                  <div key={event.id} className={profileTab === 'myEvents' ? 'manage-event-container' : ''}>
+                  <div key={event.id} className={profileTab === 'myEvents' ? 'manage-event-container' : 'profile-event-item'}>
                     <EventCard
                       event={event}
                       showPastLabel={profileTab === 'past'}
                       favoriteEvents={favoriteEvents}
                       toggleFavoriteEvent={toggleFavorite}
                       calendarEvents={calendarEvents}
+                      onClick={handleEventClick}
                     />
                     {profileTab === 'myEvents' && (
                       <div className="event-management-buttons">
@@ -315,6 +317,21 @@ const ProfileScreen = ({
           isEditing={true}
         />
       )}
+
+      {/* Event Details Modal */}
+      <EventDetailsModal
+        event={selectedEvent}
+        isOpen={showEventDetails}
+        onClose={() => setShowEventDetails(false)}
+        toggleFavorite={toggleFavoriteEvent}
+        isFavorite={selectedEvent ? favoriteEvents.has(selectedEvent.id) : false}
+        toggleCalendar={toggleCalendarEvent}
+        isInCalendar={selectedEvent ? calendarEvents.has(String(selectedEvent.id)) : false}
+        isLoggedIn={isLoggedIn}
+        setShowLoginModal={setShowLoginModal}
+        favoriteEvents={favoriteEvents}
+        calendarEvents={calendarEvents}
+      />
     </div>
   );
 };
